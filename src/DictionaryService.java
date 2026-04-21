@@ -4,39 +4,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-
-// Interface for validation strategies
-interface DictionaryValidator {
-    boolean isValidKey(String key);
-    String getLanguageName();
-}
-
-// Validator for Language 1: 4 Latin letters
-class Latin4Validator implements DictionaryValidator {
-    @Override
-    public boolean isValidKey(String key) {
-        return key != null && key.matches("^[a-zA-Z]{4}$");
-    }
-
-    @Override
-    public String getLanguageName() {
-        return "Language 1 (4 Latin Letters)";
-    }
-}
-
-// Validator for Language 2: 5 Digits
-class Digit5Validator implements DictionaryValidator {
-    @Override
-    public boolean isValidKey(String key) {
-        return key != null && key.matches("^[0-9]{5}$");
-    }
-
-    @Override
-    public String getLanguageName() {
-        return "Language 2 (5 Digits)";
-    }
-}
 
 // The Dictionary Service Class
 public class DictionaryService {
