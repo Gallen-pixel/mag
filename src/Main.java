@@ -3,39 +3,49 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        // Initialize the two dictionaries with their specific files and validators
-        DictionaryService dict1 = new DictionaryService("dict_latin4.txt", new Latin4Validator());
-        DictionaryService dict2 = new DictionaryService("dict_digit5.txt", new Digit5Validator());
-
         Scanner scanner = new Scanner(System.in);
-        boolean running = true;
 
-        System.out.println("Welcome to the Dictionary System!");
+        System.out.println("=== Dictionary System Initialization ===");
+
+        System.out.print("Enter file path for Dictionary 1: ");
+        String path1 = scanner.nextLine();
+
+        System.out.print("Enter file path for Dictionary 2: ");
+        String path2 = scanner.nextLine();
+
+        // Initialize services with user-provided paths
+        DictionaryService dict1 = new DictionaryService(path1, new Latin4Validator());
+        DictionaryService dict2 = new DictionaryService(path2, new Digit5Validator());
+
+        boolean running = true;
+        System.out.println("\nSystem started successfully.");
+        System.out.println("Dict 1 file: " + path1);
+        System.out.println("Dict 2 file: " + path2);
 
         while (running) {
             System.out.println("\n--- Main Menu ---");
             System.out.println("1. Work with Dictionary 1 (" + dict1.getValidator().getLanguageName() + ")");
             System.out.println("2. Work with Dictionary 2 (" + dict2.getValidator().getLanguageName() + ")");
+            System.out.println("3. View contents of BOTH dictionaries");
             System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
+            System.out.print("Select an option: ");
 
             int choice = getIntInput(scanner);
 
-            DictionaryService currentDict = null;
-
             if (choice == 1) {
-                currentDict = dict1;
+                handleDictionaryMenu(scanner, dict1);
             } else if (choice == 2) {
-                currentDict = dict2;
+                handleDictionaryMenu(scanner, dict2);
+            } else if (choice == 3) {
+                System.out.println("\n--- Contents of Dictionary 1 ---");
+                viewAll(dict1);
+                System.out.println("\n--- Contents of Dictionary 2 ---");
+                viewAll(dict2);
             } else if (choice == 0) {
                 running = false;
-                continue;
             } else {
                 System.out.println("Invalid option.");
-                continue;
             }
-
-            handleDictionaryMenu(scanner, currentDict);
         }
         System.out.println("Goodbye!");
     }
@@ -54,23 +64,12 @@ public class Main {
             int action = getIntInput(scanner);
 
             switch (action) {
-                case 1:
-                    viewAll(dict);
-                    break;
-                case 2:
-                    search(scanner, dict);
-                    break;
-                case 3:
-                    add(scanner, dict);
-                    break;
-                case 4:
-                    delete(scanner, dict);
-                    break;
-                case 0:
-                    inMenu = false;
-                    break;
-                default:
-                    System.out.println("Invalid action.");
+                case 1: viewAll(dict); break;
+                case 2: search(scanner, dict); break;
+                case 3: add(scanner, dict); break;
+                case 4: delete(scanner, dict); break;
+                case 0: inMenu = false; break;
+                default: System.out.println("Invalid action.");
             }
         }
     }
@@ -100,16 +99,16 @@ public class Main {
     }
 
     private static void add(Scanner scanner, DictionaryService dict) {
-        System.out.print("Enter Key (must match rules): ");
+        System.out.print("Enter Key: ");
         String key = scanner.nextLine();
-        System.out.print("Enter Value (Russian translation): ");
+        System.out.print("Enter Value (translation): ");
         String value = scanner.nextLine();
 
         if (dict.addEntry(key, value)) {
             System.out.println("Entry added successfully!");
         } else {
             System.out.println("Error: Invalid Key format!");
-            System.out.println("Rules for this dictionary: " + dict.getValidator().getLanguageName());
+            System.out.println("Required format: " + dict.getValidator().getLanguageName());
         }
     }
 
@@ -123,10 +122,9 @@ public class Main {
         }
     }
 
-    // Helper to handle integer input safely
     private static int getIntInput(Scanner scanner) {
         while (!scanner.hasNextInt()) {
-            System.out.println("Please enter a number.");
+            System.out.println("Please enter a valid number.");
             scanner.next();
         }
         int val = scanner.nextInt();
